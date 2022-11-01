@@ -7,6 +7,10 @@ const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
 const initializePassport = require("./passportConfig")
+const cron = require("node-cron");
+const nodemailer = require("nodemailer")
+
+
 require("dotenv").config();
 
 initializePassport(passport);
@@ -26,7 +30,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(flash());
-
+//app.use(express.static("./views"));
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -41,8 +45,29 @@ app.get('/users/register', checkAuthenticated, (req, res) => {
 });
 
 app.get('/users/dashboard', checkNotAuthenticated, (req, res) => {
-    res.render('dashboard', { user: req.user.name });
+
+    pool.query(
+        `SELECT to_char(date,'DD-MM-YYYY'), text, time FROM notifications
+        WHERE user_id = $1`, [req.user.id], (err, dataList) => {
+        if (err) {
+            throw err;
+        }
+        res.render('dashboard', { user: req.user.name, dataList: dataList.rows });
+    })
 });
+
+app.post('/users/dashboard', checkNotAuthenticated, (req, res) => {
+    let { notification, date, time } = req.body;
+    pool.query(
+        `INSERT INTO notifications (text, time, date, user_id)
+        VALUES ($1, $2, $3, $4)`, [notification, time, date, req.user.id], (err, results) => {
+        if (err) {
+            throw err;
+        }
+        res.redirect('/users/dashboard');
+    })
+});
+
 
 app.post("/users/register", async (req, res) => {
     let { name, email, password, password2 } = req.body;
@@ -90,7 +115,7 @@ app.post("/users/register", async (req, res) => {
 })
 
 app.post("/users/login", passport.authenticate("local", {
-    successRedirect: "/users/dashboard",
+    successRedirect: "/home",
     failureRedirect: "/users/login",
     failureFlash: true
 })
@@ -108,7 +133,7 @@ app.get("/users/logout", function (req, res, next) {
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect("/users/dashboard");
+        return res.redirect("/home");
     }
     next();
 }
@@ -127,6 +152,102 @@ app.post("/users/dashboard/add", (req, res) => {
 
 });
 
+
+app.get('/home', checkNotAuthenticated, function (req, res, err) {
+    pool.query(
+        `SELECT to_char(date,'DD-MM-YYYY'), text, time, id FROM notifications
+        WHERE user_id = $1`, [req.user.id], (err, dataList) => {
+        if (err) {
+            throw err;
+        }
+        return res.render('home', {
+            tittle: "Home",
+            task: dataList.rows
+        });
+    })
+});
+
+app.get('/home/delete-task', checkNotAuthenticated, function (req, res, err) {
+    // get the id from query
+    var id = req.query;
+
+    // checking the number of tasks selected to delete
+
+
+    var count = Object.keys(id).length;
+    for (let i = 0; i < count; i++) {
+
+        pool.query(
+
+            `
+            DELETE FROM notifications 
+            WHERE id = $1
+            `, [Object.keys(id)[i]], function (err) {
+            if (err) {
+                console.log('error in deleting task');
+            }
+        })
+        console.log(Object.keys(id)[i]);
+    }
+    return res.redirect('/home');
+});
+
+app.post('/home/add-task', checkNotAuthenticated, (req, res) => {
+    let { notification, date, time } = req.body;
+    pool.query(
+        `INSERT INTO notifications (text, time, date, user_id)
+        VALUES ($1, $2, $3, $4)`, [notification, time, date, req.user.id], (err, results) => {
+        if (err) {
+            throw err;
+        }
+        res.redirect('/home');
+    })
+});
+
+
+let mailOptions = {
+    from: "nickolaytrusov@mail.ru",
+    to: "",
+    subject: "Notification",
+    text: "11111"
+};
+const transporter = nodemailer.createTransport({
+    host: 'smtp.mail.ru',
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+        user: "nickolaytrusov@mail.ru",
+        pass: process.env.emailPass
+    }
+});
+
+cron.schedule('* * * * *', async () => {
+
+    const data = await pool.query(
+        `SELECT to_char(date,'YYYY-MM-DD'), text, time, id, user_id FROM notifications`
+    )
+    const date = new Date();
+    data.rows.forEach(async (element) => {
+        if (Date.parse(element.to_char + "T" + element.time + ".000Z") <= date) {
+            console.log(element.user_id);
+            const mail = await pool.query(
+                `SELECT email FROM users
+        WHERE id = $1`, [element.user_id]
+            )
+            if (mail.rows[0] != undefined){
+                mailOptions.to = mail.rows[0].email;
+                mailOptions.text = element.text;
+                transporter.sendMail(mailOptions, (error, info) =>{
+                    if (error){
+                        console.log(error);
+                    } else {
+                        console.log('Email send: ' + info.response);
+                    }
+                })
+            }
+        }
+    });
+})
 
 
 app.listen(PORT, () => {
