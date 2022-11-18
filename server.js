@@ -10,8 +10,20 @@ const initializePassport = require("./passportConfig")
 const cron = require("node-cron");
 const nodemailer = require("nodemailer")
 
+const webPush = require('web-push');
+const bodyParser = require('body-parser');
+const path = require('path');
+
+
 
 require("dotenv").config();
+
+app.use(bodyParser.json());
+const publicVapidKey = 'BJOcvM1pcVl85NjYdxHEIjJA8IAWG7RHPS6zEwVN8mdw7X0rUQN08CW10NGpIaRYQ7aPh3BGu0iVqa8I2F_1MqA';
+const privateVapidKey = 'lWcfVFRp6-XX4ymbjXZSxftbb1CHstmfwRmjK8gzW7M';
+
+webPush.setVapidDetails('mailto:test@example.com', publicVapidKey, privateVapidKey);
+
 
 initializePassport(passport);
 
@@ -30,7 +42,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(flash());
-//app.use(express.static("./views"));
+
+app.use(express.static("./views"));
+
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -187,7 +201,7 @@ app.get('/home/delete-task', checkNotAuthenticated, function (req, res, err) {
                 console.log('error in deleting task');
             }
         })
-        console.log(Object.keys(id)[i]);
+        console.log('deleting', Object.keys(id)[i]);
     }
     return res.redirect('/home');
 });
@@ -234,9 +248,10 @@ cron.schedule('* * * * *', async () => {
                 `SELECT email FROM users
         WHERE id = $1`, [element.user_id]
             )
-            if (mail.rows[0] != undefined){
+            if (mail.rows[0] != undefined) {
                 mailOptions.to = mail.rows[0].email;
                 mailOptions.text = element.text;
+                /** 
                 transporter.sendMail(mailOptions, (error, info) =>{
                     if (error){
                         console.log(error);
@@ -244,10 +259,49 @@ cron.schedule('* * * * *', async () => {
                         console.log('Email send: ' + info.response);
                     }
                 })
+                */
             }
         }
     });
 })
+
+app.post('/test', async (req, res) => {
+    const subscription = req.body
+    res.status(201).json({});
+
+    const data = await pool.query(
+        `SELECT to_char(date,'YYYY-MM-DD'), text, time, id, user_id FROM notifications 
+        WHERE user_id = $1`, [req.user.id]
+    )
+
+    const date = new Date();
+    data.rows.forEach(async (element) => {
+        if (Date.parse(element.to_char + "T" + element.time + ".000Z") <= date) {
+            // create payload
+            const payload = JSON.stringify({
+                title: `NOTIFICATION!`,
+                body: `${element.text}`
+            });
+
+            webPush.sendNotification(subscription, payload)
+                .catch(error => console.error(error));
+        }
+    });
+});
+
+
+app.post('/home/add-tg-username', checkNotAuthenticated, (req, res) => {
+    let {telegram_username} = req.body;
+    console.log(telegram_username);
+    pool.query(
+        `UPDATE users set telegram_username = ($1)
+        WHERE id = ($2)`, [telegram_username, req.user.id], (err, results) => {
+        if (err) {
+            throw err;
+        }
+        res.redirect('/home');
+    })
+});
 
 
 app.listen(PORT, () => {
