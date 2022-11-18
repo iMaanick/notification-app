@@ -1,0 +1,150 @@
+div {
+    margin: 20px
+}
+.noselect {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+		-webkit-tap-highlight-color: transparent;
+}
+
+button {
+	width: 160px;
+	height: 50px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	background: red;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+	background: #e62222;
+}
+
+button, button span {
+	transition: 200ms;
+}
+
+button .text {
+	transform: translateX(35px);
+	color: white;
+	font-weight: bold;
+}
+
+button .icon {
+	position: absolute;
+	border-left: 1px solid #c41b1b;
+	transform: translateX(110px);
+	height: 40px;
+	width: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+button svg {
+	width: 15px;
+	fill: #eee;
+}
+
+button:hover {
+	background: #ff3636;
+}
+
+button:hover .text {
+	color: transparent;
+}
+
+button:hover .icon {
+	width: 150px;
+	border-left: none;
+	transform: translateX(0);
+}
+
+button:focus {
+	outline: none;
+}
+
+
+
+
+
+
+
+  .button2{
+    background:#1AAB8A;
+    color:#fff;
+    border:none;
+    position:relative;
+    height:30px;
+    font-size:1.2em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+    width: 250;
+    text-align: center;
+  }
+  .button2:hover{
+    background:rgb(6, 192, 105);
+    color:#000000;
+  }
+  .button2:before,button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #1AAB8A;
+    transition:400ms ease all;
+  }
+  .button2:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .button2:hover:before,.button2:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  
+
+  .logout {
+    background: url("https://dh3vbjnk0bnfa.cloudfront.net/static/centralauth/images/btn-login-hover.png")
+      no-repeat 5px 5px #484b4f;
+    width: 100px;
+    cursor: pointer;
+    border-radius: 50px;
+    padding: 10px 20px 10px 0;
+    color: White;
+    font-size: 14px;
+    text-align: left;
+    text-indent: 40px;
+    display: block;
+    margin: 0 auto;
+  
+    /* Animations: */
+    -webkit-transition-timing-function: ease-in-out;
+    -webkit-transition-duration: 0.4s;
+    -webkit-transition-property: all;
+  
+    -moz-transition-timing-function: ease-in-out;
+    -moz-transition-duration: 0.4s;
+    -moz-transition-property: all;
+  }
+  
+  .logout:hover {
+    background-image: url("https://dh3vbjnk0bnfa.cloudfront.net/static/centralauth/images/btn-login.png");
+    background-position: 65px 5px;
+    text-indent: 15px;
+  }
+
+  #logout {
+    width: 50px;
+  }
+
