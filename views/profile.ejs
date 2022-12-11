@@ -377,10 +377,54 @@
         #bubbles:hover {
             background: #3D689C;
         }
+
+        .card {
+            width: 600px;
+            border: none;
+            border-radius: 10px;
+
+            background-color: #fff;
+        }
+
+
+
+        .stats {
+
+            background: #f2f5f8 !important;
+
+            color: #000 !important;
+        }
+
+        .articles {
+            font-size: 20px;
+            color: #a1aab9;
+        }
+
+        .number1 {
+            font-weight: 500;
+        }
+
+        .followers {
+            font-size: 20px;
+            color: #a1aab9;
+
+        }
+
+        .number2 {
+            font-weight: 500;
+        }
+
+        .rating {
+            font-size: 20px;
+            color: #a1aab9;
+        }
+
+        .number3 {
+            font-weight: 500;
+        }
     </style>
 </head>
 
-<!-- https://www.slidebackground.com/uploads/simple/pink-blurred-simple-powerpoint-backgrounds.jpg -->
 <canvas id="bubbles"></canvas>
 
 <body>
@@ -397,166 +441,140 @@
         </ul>
         <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
             <li>
-                <form class="nav-link waves-effect waves-light" action="/users/profile" method="GET" id="profile"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> <button
+                <form class="nav-link waves-effect waves-light" action="/home" method="GET" id="profile"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-home"></i> <button
                         style="font-size : 20px" class="btn btn-outline-light my-2 my-sm-0" type="submit">
-                        Profile</button>
+                        Home</button>
                 </form>
             </li>
         </ul>
     </nav>
 
     <section class="container">
-        <h1 align="center">TODO APP</h1>
+        <h1 align="center">PROFILE</h1>
 
-        <div align="center">
-            <button class="request-btn btn btn-outline-light my-2 my-sm-0" >Request permissions</button>
+        <div class="container mt-5 d-flex justify-content-center">
 
-        </div>
+            <div class="card p-3">
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.5/push.js"></script>
-        <div align="center" style="margin: -50">
-            <form action="/home/delete-task" method="GET">
-                <section>
-                    <div class="row d-flex justify-content-center container">
-                        <div class="col-md-8">
-                            <div class="card-hover-shadow-2x mb-3 card">
-                                <div class="card-header-tab card-header">
-                                    <div class="card-header-title font-size-lg text-capitalize font-weight-normal"><i
-                                            class="fa fa-tasks"></i>&nbsp;Task Lists</div>
+                <div class="d-flex align-items-center">
+                    <% if (userData.url_avatar !='no url' ) { %>
+                        <div>
+                            <img src=<%=userData.url_avatar%> class="rounded" height="155">
+                        </div>
+                        <% } else{ %>
+                            <div>
+                                <img src="..\zamay2.png" class="rounded" height="155">
+                            </div>
+                            <% } %>
+                                <div class="ml-3 w-100">
+
+                                    <h2 class="mb-0 mt-0">
+                                        <%= userData.name %>
+                                    </h2>
+
+
+                                    <p style="font-size:18px">Email: <%= userData.email %>
+                                    </p>
+
+                                    <p style="font-size:18px">Telegram username: <%= userData.telegram_username %>
+                                    </p>
+
+
+
+
+                                    <div
+                                        class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+
+                                        <div class="d-flex flex-column">
+
+                                            <span class="articles">Tasks</span>
+                                            <span class="number1">
+                                                <%= userData.tasks_completed + userData.tasks_failed %>
+                                            </span>
+
+                                        </div>
+
+                                        <div class="d-flex flex-column">
+
+                                            <span class="followers">Success</span>
+                                            <span class="number2">
+                                                <%=userData.tasks_completed%>
+                                            </span>
+
+                                        </div>
+
+                                        <% if (userData.tasks_completed + userData.tasks_failed != 0 ) { %>
+
+
+                                            <div class="d-flex flex-column">
+
+                                                <span class="rating">Rating %</span>
+                                                <span class="number3">
+                                                    <%= (userData.tasks_completed/(userData.tasks_completed +
+                                                        userData.tasks_failed)).toFixed(2)*100 %>
+                                                </span>
+
+                                            </div>
+                                            <% } else{ %>
+
+                                                <div class="d-flex flex-column">
+
+                                                    <span class="rating">Rating %</span>
+                                                    <span class="number3">0</span>
+
+                                                </div>
+
+
+                                                <% } %>
+
+                                    </div>
+
 
                                 </div>
-                                <perfect-scrollbar class="ps-show-limits">
-                                    <div style="position: static;" class="ps ps--active-y">
-                                        <div class="ps-content">
-                                            <ul class=" list-group list-group-flush">
-                                                <% for(let i of task) { %>
-                                                    <li class="list-group-item">
-                                                        <div class="widget-content p-0">
-                                                            <div class="widget-content-wrapper">
-                                                                <div class="widget-content-left">
-                                                                    <div class="widget-heading">
-                                                                        <%= i.text %>
-                                                                    </div>
-                                                                    <div class="widget-subheading"><i>do until <%=
-                                                                                i.time %>
-                                                                                <%= i.to_char %></i></div>
-                                                                </div>
-                                                                <div class="widget-content-right">
-                                                                    <div class="widget-content-right">
-                                                                        <button formaction="fail"
-                                                                            class="border-0 btn-transition btn btn-outline-danger"
-                                                                            name="<%= i.id %>" value="123">
-                                                                            <i class="fa fa-trash"></i>
 
-                                                                        </button>
-                                                                        <button formaction="success"
-                                                                            class="border-0 btn-transition btn btn-outline-danger"
-                                                                            name="<%= i.id %>">
-                                                                            <i class="fa fa-check-square"></i>
 
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <% } %>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </perfect-scrollbar>
-                            </div>
-                        </div>
-                    </div>
 
-                </section>
-                <div class="wrapper" style="margin: 20 " align="center">
-                    <button class="open-popup btn btn-outline-light my-2 my-sm-0" type="submit">Add notification
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-bell-fill" viewBox="0 0 16 16">
+                </div>
+
+            </div>
+        </div>
+        <div style="margin-top: 20;">
+            <form action="/home/add-tg-username" method="POST">
+                <div align="center"> <input type="text" id="telegram_username" name="telegram_username"
+                        placeholder="enter your username" required>
+                </div>
+                <div class="nav justify-content-center" style="margin: 10">
+                    <button style="font-size : 15px;" class="open-popup btn btn-outline-light my-2 my-sm-0">
+                        add tg nickname
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-telegram" viewBox="0 0 16 16">
                             <path
-                                d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z">
-                            </path>
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z" />
                         </svg>
                     </button>
                 </div>
+
             </form>
         </div>
-        <!-- class="btn btn-outline-light my-2 my-sm-0" type="submit" -->
 
-        <div class="popup__bg">
-            <!-- form to create task -->
-            <form action="/home/add-task" class="popup" method="POST">
-                <svg class="close-popup" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="#2982ff"
-                        d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
-                </svg>
-                <label>
-                    <h1 class="h3 mb-3 fw-normal" align="center">Here you can add new task</h1>
-                </label>
-                <label>
-                    <input type="text" id="notification" name="notification" placeholder="enter your notification"
+        <div style="margin-top: 20;">
+            <form action="/home/profile/addAvatar" method="POST">
+                <div align="center"> <input type="text" id="avatar_url" name="avatar_url" placeholder="enter your url"
                         required>
+                </div>
+                <div class="nav justify-content-center" style="margin: 10">
+                    <button style="font-size : 15px;" class="open-popup btn btn-outline-light my-2 my-sm-0">
+                        add avatar url
+                        <i class="fa fa-photo"></i>
+                    </button>
+                </div>
 
-                </label>
-                <label>
-                    <input type="date" id="date" name="date" placeholder="enter date" required>
-                </label>
-                <label>
-                    <input type="time" id="time" name="time" placeholder="enter time" required>
-                </label>
-                <p style="font-size : 15px;" align = "Center"> Set reminder 1 </p>
-
-                <label>
-                    <input type="date" id="reminder_date2" name="reminder_date2" placeholder="enter date" required>
-                </label>
-                <label>
-                    <input type="time" id="reminder_time2" name="reminder_time2" placeholder="enter time" required>
-                </label>
-
-                <button type="submit button" class="btn btn-light" id="add">
-                    add notification
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-bell-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z">
-                        </path>
-                    </svg>
-                </button>
             </form>
         </div>
 
-        <script src="client.js" type="module"></script>
+
         <script>
-            let popupBg = document.querySelector('.popup__bg');
-            let popup = document.querySelector('.popup');
-            let button2 = document.getElementById("add");
-            let openPopupButtons = document.querySelectorAll('.open-popup');
-            let closePopupButton = document.querySelector('.close-popup');
-
-            openPopupButtons.forEach((button) => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    popupBg.classList.add('active');
-                    popup.classList.add('active');
-                    // button2.disabled = true;
-                })
-            });
-
-            closePopupButton.addEventListener('click', () => {
-                popupBg.classList.remove('active');
-                popup.classList.remove('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (e.target === popupBg) {
-                    popupBg.classList.remove('active');
-                    popup.classList.remove('active');
-                }
-            });
-
-
             (function () {
 
                 var width, height, canvas, ctx, circles, target, animateHeader = true;
@@ -646,37 +664,6 @@
                 }
 
             })();
-
-
-
-
-
-            const requestButton = document.querySelector(".request-btn");
-            const showButton = document.querySelector(".show-btn");
-
-            function onGranted() {
-                requestButton.style.background = "green";
-            }
-
-            function onDenied() {
-                requestButton.style.background = "red";
-            }
-
-            requestButton.onclick = function () {
-                Push.Permission.request(onGranted, onDenied);
-            }
-
-            showButton.onclick = function () {
-                Push.create("Hello from Sabe.io!", {
-                    body: "This is a web notification!",
-                    icon: "/demos/push-js-notifications-app/icon.png",
-                    timeout: 5000,
-                    onClick: function () {
-                        console.log(this);
-                    }
-                });
-            };
-
         </script>
 </body>
 
