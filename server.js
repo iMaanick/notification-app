@@ -181,41 +181,159 @@ app.get('/home', checkNotAuthenticated, function (req, res, err) {
     })
 });
 
-app.get('/home/delete-task', checkNotAuthenticated, function (req, res, err) {
-    // get the id from query
-    var id = req.query;
+async function updateCompletedTasks(id){
+    const tasks_completed = await pool.query(
+        `SELECT tasks_completed FROM users 
+        WHERE id = $1`, [id]
+    )
+        
+    await pool.query(
+        `UPDATE users set tasks_completed = tasks_completed + 1
+        WHERE id = ($1)`, [id], (err, results) => {
+        if (err) {
+            throw err;
+        }
+    })
 
-    // checking the number of tasks selected to delete
+}
+async function updateFailedTasks(id){
+    const tasks_completed = await pool.query(
+        `SELECT tasks_failed FROM users 
+        WHERE id = $1`, [id]
+    )
+        
+    await pool.query(
+        `UPDATE users set tasks_failed = tasks_failed + 1
+        WHERE id = ($1)`, [id], (err, results) => {
+        if (err) {
+            throw err;
+        }
+    })
 
+}
+// app.get('/home/delete-task', checkNotAuthenticated, async function (req, res, err) {
+//     // get the id from query
+    
+//     var id = req.query;
+//     console.log(req.body['202'])
+//     // checking the number of tasks selected to delete
 
-    var count = Object.keys(id).length;
-    for (let i = 0; i < count; i++) {
+//     var count = Object.keys(id).length;
+//     for (let i = 0; i < count; i++) {
 
-        pool.query(
+//         pool.query(
 
+//             `
+//             DELETE FROM notifications 
+//             WHERE id = $1
+//             `, [Object.keys(id)[i]], function (err) {
+//             if (err) {
+//                 console.log('error in deleting task');
+//             }
+//             updateCompletedTasks(req.user.id);
+//         })
+//         console.log('deleting', Object.keys(id)[i]);
+//     }
+//     //return res.redirect('/home');
+// });
+
+app.get("/success", (req, res) => {
+    console.log('huoi')
+     // get the id from query
+    
+     var id = req.query;
+     console.log(req.body['202'])
+     // checking the number of tasks selected to delete
+ 
+     var count = Object.keys(id).length;
+     for (let i = 0; i < count; i++) {
+ 
+         pool.query(
+ 
+             `
+             DELETE FROM notifications 
+             WHERE id = $1
+             `, [Object.keys(id)[i]], function (err) {
+             if (err) {
+                 console.log('error in deleting task');
+             }
+             updateCompletedTasks(req.user.id);
+         })
+         pool.query(
+ 
             `
-            DELETE FROM notifications 
-            WHERE id = $1
+            DELETE FROM reminders 
+            WHERE notification_id = $1
             `, [Object.keys(id)[i]], function (err) {
             if (err) {
                 console.log('error in deleting task');
             }
         })
-        console.log('deleting', Object.keys(id)[i]);
-    }
-    return res.redirect('/home');
+         console.log('deleting', Object.keys(id)[i]);
+     }
+     return res.redirect('/home');
+
 });
 
-app.post('/home/add-task', checkNotAuthenticated, (req, res) => {
-    let { notification, date, time } = req.body;
-    pool.query(
+app.get("/fail", (req, res) => {
+    console.log('ayayay')
+     // get the id from query
+    
+     var id = req.query;
+     console.log(req.body['202'])
+     // checking the number of tasks selected to delete
+ 
+     var count = Object.keys(id).length;
+     for (let i = 0; i < count; i++) {
+ 
+         pool.query(
+ 
+             `
+             DELETE FROM notifications 
+             WHERE id = $1
+             `, [Object.keys(id)[i]], function (err) {
+             if (err) {
+                 console.log('error in deleting task');
+             }
+             updateFailedTasks(req.user.id);
+         })
+         pool.query(
+ 
+            `
+            DELETE FROM reminders 
+            WHERE notification_id = $1
+            `, [Object.keys(id)[i]], function (err) {
+            if (err) {
+                console.log('error in deleting task');
+            }
+        })
+         console.log('deleting', Object.keys(id)[i]);
+     }
+     return res.redirect('/home');
+
+});
+
+
+app.post('/home/add-task',  checkNotAuthenticated, async (req, res) => {
+    let { notification, date, time, reminder_date2, reminder_time2 } = req.body;
+    console.log(reminder_date2, reminder_time2);
+    await pool.query(
         `INSERT INTO notifications (text, time, date, user_id)
-        VALUES ($1, $2, $3, $4)`, [notification, time, date, req.user.id], (err, results) => {
+        VALUES ($1, $2, $3, $4) RETURNING id;`, [notification, time, date, req.user.id], (err, results) => {
         if (err) {
             throw err;
         }
-        res.redirect('/home');
+
+        pool.query(
+            `INSERT INTO reminders (text, time, date, notification_id)
+            VALUES ($1, $2, $3, $4);`, [notification, reminder_time2, reminder_date2, results.rows[0].id], (err, results) => {
+            if (err) {
+                throw err;
+            }    
+        })
+        //console.log(results.rows[0].id);
     })
+    res.redirect('/home');
 });
 
 
@@ -291,7 +409,7 @@ app.post('/test', async (req, res) => {
 
 
 app.post('/home/add-tg-username', checkNotAuthenticated, (req, res) => {
-    let {telegram_username} = req.body;
+    let { telegram_username } = req.body;
     console.log(telegram_username);
     pool.query(
         `UPDATE users set telegram_username = ($1)
@@ -302,6 +420,34 @@ app.post('/home/add-tg-username', checkNotAuthenticated, (req, res) => {
         res.redirect('/home');
     })
 });
+
+app.get('/users/profile', checkNotAuthenticated, (req, res) => {
+
+    pool.query(
+        `SELECT name, email, telegram_username, url_avatar, tasks_completed, tasks_failed FROM users
+        WHERE id = $1`, [req.user.id], (err, userData) => {
+        if (err) {
+            throw err;
+        }
+        console.log(userData.rows[0]);
+        res.render('profile', { tittle: "profile", userData: userData.rows[0] });
+    })
+});
+
+
+app.post('/home/profile/addAvatar', checkNotAuthenticated, (req, res) => {
+    let { avatar_url } = req.body;
+    console.log(avatar_url);
+    pool.query(
+        `UPDATE users set url_avatar = ($1)
+        WHERE id = ($2)`, [avatar_url, req.user.id], (err, results) => {
+        if (err) {
+            throw err;
+        }
+        res.redirect('/users/profile');
+    })
+});
+
 
 
 app.listen(PORT, () => {
