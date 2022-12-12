@@ -13,8 +13,26 @@ const nodemailer = require("nodemailer")
 const webPush = require('web-push');
 const bodyParser = require('body-parser');
 const path = require('path');
+const swaggerjsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: 'to do app API',
+            description: 'Incomplete documentation for "to do app"',
+            contact: {
+                name: "Maanick"
+            },
+            servers: ["http://localhost:4000"]
+        }
+    },
+    apis: ["server.js"]
+}
+
+const swaggerDocs = swaggerjsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 require("dotenv").config();
 
@@ -50,38 +68,56 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+
+/**
+ * @swagger
+ * /users/login:
+ *   get:
+ *     summary: render login page
+ *     tags: [registration and login]
+ */
+
 app.get('/users/login', checkAuthenticated, (req, res) => {
     res.render('login');
 });
+
+/**
+ * @swagger
+ * /users/register:
+ *   get:
+ *     summary: render registration page
+ *     tags: [registration and login]
+ */
 
 app.get('/users/register', checkAuthenticated, (req, res) => {
     res.render('register');
 });
 
-app.get('/users/dashboard', checkNotAuthenticated, (req, res) => {
+ /**
+  * @swagger
+  * tags:
+  *   name: registration and login
+  *   description: The registration and login managing API
+  */
 
-    pool.query(
-        `SELECT to_char(date,'DD-MM-YYYY'), text, time FROM notifications
-        WHERE user_id = $1`, [req.user.id], (err, dataList) => {
-        if (err) {
-            throw err;
-        }
-        res.render('dashboard', { user: req.user.name, dataList: dataList.rows });
-    })
-});
 
-app.post('/users/dashboard', checkNotAuthenticated, (req, res) => {
-    let { notification, date, time } = req.body;
-    pool.query(
-        `INSERT INTO notifications (text, time, date, user_id)
-        VALUES ($1, $2, $3, $4)`, [notification, time, date, req.user.id], (err, results) => {
-        if (err) {
-            throw err;
-        }
-        res.redirect('/users/dashboard');
-    })
-});
+/**
+  * @swagger
+  * tags:
+  *   name: pages
+  *   description: The API used to render pages
+  */
 
+
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Writes registration data to the database
+ *     tags: [registration and login]
+ *     description: Checks that the form fields have been entered correctly and writes the data to the database. Redirects to /users/login if data was correct
+
+ */
 
 app.post("/users/register", async (req, res) => {
     let { name, email, password, password2 } = req.body;
@@ -128,6 +164,16 @@ app.post("/users/register", async (req, res) => {
     }
 })
 
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: login to the app
+ *     tags: [registration and login]
+ */
+
+
 app.post("/users/login", passport.authenticate("local", {
     successRedirect: "/home",
     failureRedirect: "/users/login",
@@ -135,6 +181,14 @@ app.post("/users/login", passport.authenticate("local", {
 })
 );
 
+
+/**
+ * @swagger
+ * /users/logout:
+ *   get:
+ *     summary: logout the application
+ *     tags: [registration and login]
+ */
 app.get("/users/logout", function (req, res, next) {
     req.logout(function (err) {
         if (err) {
@@ -144,6 +198,8 @@ app.get("/users/logout", function (req, res, next) {
         res.redirect("/users/login");
     });
 });
+
+
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -160,11 +216,15 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 
-app.post("/users/dashboard/add", (req, res) => {
-    let { notification, date, time } = req.body;
-    console.log("insert data into db..", { notification, date, time });
+/**
+ * @swagger
+ * /home:
+ *   get:
+ *     summary: render /home
+ *     tags: [pages]
+ *     description: receives notifications from the database and renders the home page
 
-});
+ */
 
 
 app.get('/home', checkNotAuthenticated, function (req, res, err) {
@@ -211,36 +271,19 @@ async function updateFailedTasks(id){
     })
 
 }
-// app.get('/home/delete-task', checkNotAuthenticated, async function (req, res, err) {
-//     // get the id from query
-    
-//     var id = req.query;
-//     console.log(req.body['202'])
-//     // checking the number of tasks selected to delete
 
-//     var count = Object.keys(id).length;
-//     for (let i = 0; i < count; i++) {
 
-//         pool.query(
-
-//             `
-//             DELETE FROM notifications 
-//             WHERE id = $1
-//             `, [Object.keys(id)[i]], function (err) {
-//             if (err) {
-//                 console.log('error in deleting task');
-//             }
-//             updateCompletedTasks(req.user.id);
-//         })
-//         console.log('deleting', Object.keys(id)[i]);
-//     }
-//     //return res.redirect('/home');
-// });
+/**
+ * @swagger
+ * /success:
+ *   get:
+ *     summary: handles the success button click
+ *     tags: [pages]
+ *     description: Removes notifications and reminders entries from the database. Increases the success counter by 1.
+ */
 
 app.get("/success", (req, res) => {
-    console.log('huoi')
      // get the id from query
-    
      var id = req.query;
      console.log(req.body['202'])
      // checking the number of tasks selected to delete
@@ -275,12 +318,19 @@ app.get("/success", (req, res) => {
 
 });
 
+
+/**
+ * @swagger
+ * /fail:
+ *   get:
+ *     summary: handles the fail button click
+ *     tags: [pages]
+ *     description: Removes notifications and reminders entries from the database. Increases the fail counter by 1.
+ */
+
 app.get("/fail", (req, res) => {
-    console.log('ayayay')
      // get the id from query
-    
      var id = req.query;
-     console.log(req.body['202'])
      // checking the number of tasks selected to delete
  
      var count = Object.keys(id).length;
@@ -313,6 +363,15 @@ app.get("/fail", (req, res) => {
 
 });
 
+
+/**
+ * @swagger
+ * /home/add-task:
+ *   post:
+ *     summary: add notifications and reminders to the database.
+ *     tags: [pages]
+ *     description: add notifications and reminders to the database.
+ */
 
 app.post('/home/add-task',  checkNotAuthenticated, async (req, res) => {
     let { notification, date, time, reminder_date2, reminder_time2 } = req.body;
@@ -408,6 +467,15 @@ app.post('/test', async (req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /home/add-tg-username:
+ *   post:
+ *     summary: add tg username to the database.
+ *     tags: [pages]
+ *     description: add tg username to the database.
+ */
+
 app.post('/home/add-tg-username', checkNotAuthenticated, (req, res) => {
     let { telegram_username } = req.body;
     console.log(telegram_username);
@@ -420,6 +488,16 @@ app.post('/home/add-tg-username', checkNotAuthenticated, (req, res) => {
         res.redirect('/home');
     })
 });
+
+
+/**
+ * @swagger
+ * /users/profile:
+ *   get:
+ *     summary: render profile page.
+ *     tags: [pages]
+ *     description: select the user data from the database and renders the profile page
+ */
 
 app.get('/users/profile', checkNotAuthenticated, (req, res) => {
 
@@ -434,6 +512,15 @@ app.get('/users/profile', checkNotAuthenticated, (req, res) => {
     })
 });
 
+
+/**
+ * @swagger
+ * /home/profile/addAvatar:
+ *   get:
+ *     summary: add profile avatar.
+ *     tags: [pages]
+ *     description: writes the link of the user's avatar image to the database
+ */
 
 app.post('/home/profile/addAvatar', checkNotAuthenticated, (req, res) => {
     let { avatar_url } = req.body;
