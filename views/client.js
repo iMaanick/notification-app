@@ -17,7 +17,7 @@ function urlBase64ToUint8Array(base64String) {
   
   const publicVapidKey = 'BJOcvM1pcVl85NjYdxHEIjJA8IAWG7RHPS6zEwVN8mdw7X0rUQN08CW10NGpIaRYQ7aPh3BGu0iVqa8I2F_1MqA';
     
-  async function lul() {
+  async function checkNotifications() {
     if ('serviceWorker' in navigator) {
       const register = await navigator.serviceWorker.register('worker.js', {
         scope: '/'
@@ -41,5 +41,5 @@ function urlBase64ToUint8Array(base64String) {
       console.error('Service workers are not supported in this browser');
     }
   }
-  setInterval( lul, 30000);
+  setInterval( checkNotifications, 30000);
   
