@@ -1,39 +1,42 @@
 ::-webkit-scrollbar {
     width: 8px;
 }
-
 /* Track */
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
-
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: #888;
 }
-
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+/* body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 2.5rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    text-align: left;
+    background-color: #b0a9b9;
+} */
 i {
     font-style: italic;
 }
-
 .container {
     margin-top: 100px;
 }
-
 .card {
     box-shadow: 0 0.46875rem 2.1875rem rgba(4, 9, 20, 0.03), 0 0.9375rem 1.40625rem rgba(4, 9, 20, 0.03), 0 0.25rem 0.53125rem rgba(4, 9, 20, 0.05), 0 0.125rem 0.1875rem rgba(4, 9, 20, 0.03);
     border-width: 0;
     transition: all .2s;
 }
-
 .card-header:first-child {
     border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
 }
-
 .card-header {
     display: flex;
     align-items: center;
@@ -44,43 +47,35 @@ i {
     height: 3.5rem;
     background-color: #fff;
 }
-
 .widget-subheading {
     color: #858a8e;
     font-size: 10px;
 }
-
 .card-header.card-header-tab .card-header-title {
     display: flex;
     align-items: center;
     white-space: nowrap;
 }
-
 .card-header .header-icon {
     font-size: 1.65rem;
     margin-right: 0.625rem;
 }
-
 .card-header.card-header-tab .card-header-title {
     display: flex;
     align-items: center;
     white-space: nowrap;
 }
-
 .btn-actions-pane-right {
     margin-left: auto;
     white-space: nowrap;
 }
-
 .text-capitalize {
     text-transform: capitalize !important;
 }
-
 .scroll-area-sm {
     height: 288px;
     overflow-x: hidden;
 }
-
 .list-group-item {
     position: relative;
     display: block;
@@ -89,14 +84,12 @@ i {
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.125);
 }
-
 .list-group {
     display: flex;
     flex-direction: column;
     padding-left: 0;
     margin-bottom: 0;
 }
-
 .todo-indicator {
     position: absolute;
     width: 4px;
@@ -107,80 +100,65 @@ i {
     opacity: .6;
     transition: opacity .2s;
 }
-
 .bg-warning {
     background-color: #f7b924 !important;
 }
-
 .widget-content {
     padding: 1rem;
     flex-direction: row;
     align-items: center;
 }
-
 .widget-content .widget-content-wrapper {
     display: flex;
     flex: 1;
     position: relative;
     align-items: center;
 }
-
 .widget-content .widget-content-right.widget-content-actions {
     visibility: hidden;
     opacity: 0;
     transition: opacity .2s;
 }
-
 .widget-content .widget-content-right {
     margin-left: auto;
 }
-
 .btn:not(:disabled):not(.disabled) {
     cursor: pointer;
 }
-
 .btn {
     position: relative;
     transition: color 0.15s, background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
-
 .btn-outline-success {
     color: #3ac47d;
     border-color: #3ac47d;
 }
-
 .btn-outline-success:hover {
     color: #fff;
     background-color: #3ac47d;
     border-color: #3ac47d;
 }
-
 .btn-outline-success:hover {
     color: #fff;
     background-color: #3ac47d;
     border-color: #3ac47d;
 }
-
 .btn-primary {
     color: #fff;
     background-color: #8a9cc5;
     border-color: #8699c9;
 }
-
 .btn {
     position: relative;
     transition: color 0.15s, background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
     outline: none !important;
 }
-
 .card-footer {
     background-color: #fff;
 }
-
 * {
     box-sizing: border-box;
 }
-
 body {
     margin: 0;
     padding: 0;
@@ -192,7 +170,6 @@ body {
     left: 0;
     z-index: -1;
 }
-
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -201,7 +178,6 @@ body {
     width: 100%;
     height: 10vh;
 }
-
 .open-popup {
     display: inline-block;
     padding: 15px 30px;
@@ -212,7 +188,6 @@ body {
     font-weight: 500;
     border-radius: 5px;
 }
-
 .popup__bg {
     position: fixed;
     top: 0;
@@ -224,13 +199,11 @@ body {
     pointer-events: none;
     transition: 0.5s all;
 }
-
 .popup__bg.active {
     opacity: 1;
     pointer-events: all;
     transition: 0.5s all;
 }
-
 .popup {
     position: absolute;
     top: 50%;
@@ -241,26 +214,22 @@ body {
     padding: 25px;
     transition: 0.5s all;
 }
-
 .popup.active {
     transform: translate(-50%, -50%) scale(1);
     transition: 0.5s all;
 }
-
 .close-popup {
     position: absolute;
     top: 10px;
     right: 10px;
     cursor: pointer;
 }
-
 .popup label {
     width: 100%;
     margin-bottom: 25px;
     display: flex;
     flex-direction: column-reverse;
 }
-
 .popup .label__text {
     font-size: 14px;
     text-transform: uppercase;
@@ -268,7 +237,6 @@ body {
     color: #cfd0d3;
     margin-bottom: 5px;
 }
-
 .popup input {
     height: 45px;
     font-size: 18px;
@@ -276,15 +244,12 @@ body {
     outline: none;
     border-bottom: 1px solid #cfd0d3;
 }
-
 .popup input:focus {
     border-bottom: 1px solid #2982ff;
 }
-
 .popup input:focus+.label__text {
     color: #2982ff;
 }
-
 .popup textarea {
     resize: none;
     width: 100%;
@@ -295,15 +260,12 @@ body {
     font-size: 18px;
     padding-top: 5px;
 }
-
 .popup textarea:focus {
     border-bottom: 1px solid #2982ff;
 }
-
 .popup textarea:focus+.label__text {
     color: #2982ff;
 }
-
 .popup button {
     width: 100%;
     height: 45px;
@@ -318,18 +280,15 @@ body {
     text-transform: uppercase;
     transition: 0.5s all;
 }
-
 .popup button:hover {
     background: #fff;
     color: #2982ff;
     transition: 0.5s all;
 }
-
 canvas {
     position: absolute;
     z-index: -10;
 }
-
 #bubbles {
     background: #477ab9;
     width: 100%;
@@ -339,7 +298,48 @@ canvas {
     -o-transition: all 0.4s ease-in-out;
     transition: all 0.4s ease-in-out;
 }
-
 #bubbles:hover {
     background: #3D689C;
+}
+.card {
+    width: 600px;
+    border: none;
+    border-radius: 10px;
+    background-color: #fff;
+}
+.stats {
+    background: #f2f5f8 !important;
+    color: #000 !important;
+}
+.articles {
+    font-size: 20px;
+    color: #a1aab9;
+}
+.number1 {
+    font-weight: 500;
+}
+.followers {
+    font-size: 20px;
+    color: #a1aab9;
+}
+.number2 {
+    font-weight: 500;
+}
+.rating {
+    font-size: 20px;
+    color: #a1aab9;
+}
+.number3 {
+    font-weight: 500;
+}
+
+.newbutton {
+    display: inline-block;
+    padding: 15px 30px;
+    text-transform: uppercase;
+    background: #2982ff;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 5px;
 }

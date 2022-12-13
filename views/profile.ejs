@@ -28,7 +28,7 @@
 <canvas id="bubbles"></canvas>
 
 <body>
-    
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <ul class="navbar-nav bd-navbar-nav flex-row">
             <li class="nav-item">
@@ -139,42 +139,70 @@
 
             </div>
         </div>
-        <div style="margin-top: 20;">
-            <form action="/home/add-tg-username" method="POST">
-                <div align="center"> <input type="text" id="telegram_username" name="telegram_username"
-                        placeholder="enter your username" required>
+    </section>
+    <div style="margin-top: 20;">
+        <form action="/home/add-tg-username" method="POST">
+            <div align="center"> <input type="text" id="telegram_username" name="telegram_username"
+                    placeholder="enter your username" required>
+            </div>
+            <div class="nav justify-content-center" style="margin: 10">
+                <button style="font-size : 15px;" class="newbutton btn btn-outline-light my-2 my-sm-0">
+                    add tg nickname
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                        class="bi bi-telegram" viewBox="0 0 16 16">
+                        <path
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z" />
+                    </svg>
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div style="margin-top: 20;">
+        <form action="/home/profile/addAvatar" method="POST">
+            <div align="center"> <input type="text" id="avatar_url" name="avatar_url" placeholder="enter your url"
+                    required>
+            </div>
+            <div class="nav justify-content-center" style="margin: 10">
+                <button style="font-size : 15px;" class="newbutton btn btn-outline-light my-2 my-sm-0">
+                    add avatar url
+                    <i class="fa fa-photo"></i>
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="wrapper">
+        <button  class="open-popup btn btn-outline-light my-2 my-sm-0">
+            Telegram bot link
+        </button>
+    </div>
+
+    <div class="popup__bg">
+        <form class="popup">
+            <svg class="close-popup" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="#2982ff"
+                    d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+            </svg>
+            <label>
+                <div align = "center">
+                    <img src="http://qrcoder.ru/code/?t.me%2FNotificationsApiBot&6&0" width="198" height="198" border="0" title="QR код">
                 </div>
-                <div class="nav justify-content-center" style="margin: 10">
-                    <button style="font-size : 15px;" class="open-popup btn btn-outline-light my-2 my-sm-0">
-                        add tg nickname
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                            class="bi bi-telegram" viewBox="0 0 16 16">
-                            <path
-                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z" />
-                        </svg>
-                    </button>
-                </div>
+            </label>
+            <label  align = "center">
+                <a  class="nav-link active" href="tg://resolve?domain=NotificationsApiBot">Telegram bot</a>
 
-            </form>
-        </div>
-
-        <div style="margin-top: 20;">
-            <form action="/home/profile/addAvatar" method="POST">
-                <div align="center"> <input type="text" id="avatar_url" name="avatar_url" placeholder="enter your url"
-                        required>
-                </div>
-                <div class="nav justify-content-center" style="margin: 10">
-                    <button style="font-size : 15px;" class="open-popup btn btn-outline-light my-2 my-sm-0">
-                        add avatar url
-                        <i class="fa fa-photo"></i>
-                    </button>
-                </div>
-
-            </form>
-        </div>
+            </label>
+        </form>
+    </div>
 
 
-        <script src="profileScript.js" type="module"></script>
+
+
+
+    <script src="profileScript.js" type="module"></script>
 
 </body>
 
